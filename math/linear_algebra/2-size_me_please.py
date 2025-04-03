@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
+"""Defines `matrix_shape`."""
 
 
 def matrix_shape(matrix):
-    """Calculates the shape of a matrix."""
-    if not isinstance(matrix, list) or not matrix:
-        return []
-
-    shape = []
-    while isinstance(matrix, list):
-        shape.append(len(matrix))
-        if len(matrix) == 0:
-            break
+    """Returns the dimensions of a matrix."""
+    dimentions = []
+    while True:
+        try:
+            iter(matrix)
+            matrix[0]
+        except (TypeError, IndexError):
+            return dimentions
+        dimentions.append(len(matrix))
         matrix = matrix[0]
-
-    return shape
