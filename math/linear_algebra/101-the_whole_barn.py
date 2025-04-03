@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Defines `add_matrices`."""
 import numpy as np
 
