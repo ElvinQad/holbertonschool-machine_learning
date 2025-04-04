@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 
 
 def all_in_one():
+    """
+    Generates and displays multiple subplots in one figure.
+    """
     y0 = np.arange(0, 11) ** 3
 
     mean = [69, 0]

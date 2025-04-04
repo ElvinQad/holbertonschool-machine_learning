@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
+"""
+This script plots the exponential decay of C-14 with a logarithmic y-scale.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 def change_scale():
     """
-    Plots exponential decay of C-14 with logarithmic y-scale
+    Plots exponential decay of C-14 with logarithmic y-scale.
     """
     x = np.arange(0, 28651, 5730)
     r = np.log(0.5)
