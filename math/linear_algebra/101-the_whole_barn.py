@@ -15,5 +15,5 @@ def add_matrices(mat1, mat2):
             return None
         new_matrix.append(element)
     if type(new_matrix[0]) is not list:
-        return [x + y for x, y in zip(mat1, mat2)]
+        return list(x + y for x, y in zip(mat1, mat2))
     return new_matrix
