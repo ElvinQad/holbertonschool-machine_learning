@@ -11,10 +11,12 @@ def change_scale():
     t = 5730
     y = np.exp((r / t) * x)
 
-    plt.plot(x, y)
+    plt.plot(x, y, 'b-')  # Add explicit blue line style
     plt.xlabel('Time (years)')
     plt.ylabel('Fraction Remaining')
     plt.title('Exponential Decay of C-14')
     plt.yscale('log')
     plt.axis([0, 28650, 0.001, 1])
+    plt.grid(True, which='both', linestyle='--', alpha=0.7)
+    plt.tight_layout()
     plt.show()
