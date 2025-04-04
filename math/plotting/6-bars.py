@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This module defines a function to plot a stacked bar chart
+of fruit quantities per person.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 

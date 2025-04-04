@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+This module provides a function to plot a simple line graph.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 

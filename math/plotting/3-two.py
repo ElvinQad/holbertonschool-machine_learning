@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
+"""
+This module provides a function to plot the exponential decay of radioactive elements.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 def two():
     """
-    Plots exponential decay of C-14 and Ra-226.
+    Plots the exponential decay of Carbon-14 (C-14) and Radium-226 (Ra-226)
+    over time.
+
+    The plot displays the fraction of each element remaining as a function of time,
+    illustrating their respective decay rates.
     """
     x = np.arange(0, 21000, 1000)
     r = np.log(0.5)
