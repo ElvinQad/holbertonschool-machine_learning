@@ -2,8 +2,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-y = np.arange(0, 11) ** 3
+def line():
 
-plt.plot(y, 'r-')
-plt.axis([0, 10, None, None])
-plt.show()
+    y = np.arange(0, 11) ** 3
+    plt.figure(figsize=(6.4, 4.8))
+
+    plt.plot(y, 'r-')
+    plt.axis([0, 10, 0, 1000])
+    plt.show()
