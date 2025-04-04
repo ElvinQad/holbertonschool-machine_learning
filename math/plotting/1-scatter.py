@@ -6,6 +6,7 @@ between men's height and weight
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def scatter():
     """
     Function that creates a scatter plot of men's height vs weight
