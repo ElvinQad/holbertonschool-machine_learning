@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def all_in_one():
     y0 = np.arange(0, 11) ** 3
 
