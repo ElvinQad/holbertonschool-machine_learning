@@ -16,15 +16,14 @@ def create_layer(prev, n, activation):
         n [int]: the number of nodes in the layer to create
         activation [function]: the activation function the layer should use
 
-    use tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    use tf.keras.initializers.VarianceScaling(mode='fan_avg')
         to implement He et. al initialization for the layer weights
     each layer is given the name "layer"
 
     returns:
         tensor output of the layer
     """
-    weights_initializer = tf.contrib.layers.variance_scaling_initializer(
-        mode="FAN_AVG")
+    weights_initializer = tf.keras.initializers.VarianceScaling(mode='fan_avg')
     layer = tf.layers.Dense(
         n,
         activation=activation,
