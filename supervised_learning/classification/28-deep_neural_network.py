@@ -14,12 +14,13 @@ class DeepNeuralNetwork:
     performing multiclass classification
 
     class constructor:
-        def __init__(self, nx, layers)
+        def __init__(self, nx, layers, activation='sig')
 
     private instance attributes:
         L: the number of layers in the neural network
         cache: a dictionary holding all intermediary values of the network
         weights: a dictionary holding all weights and biases of the network
+        activation: the activation function to be used in hidden layers
 
     public methods:
         def forward_prop(self, X):
@@ -39,7 +40,7 @@ class DeepNeuralNetwork:
             loads a pickled DeepNeuralNetwork object from a file
     """
 
-    def __init__(self, nx, layers):
+    def __init__(self, nx, layers, activation='sig'):
         """
         class constructor
 
@@ -51,6 +52,8 @@ class DeepNeuralNetwork:
                 If layers is not a list, raise TypeError.
                 If elements in layers are not all positive ints,
                     raise a TypeError.
+            activation [str]: the activation function to be used in hidden layers
+                If activation is not 'sig' or 'tanh', raise a ValueError.
 
         sets private instance attributes:
             __L: the number of layers in the neural network,
@@ -62,6 +65,7 @@ class DeepNeuralNetwork:
                     using the key W{l} where {l} is the hidden layer
                 biases initialized to 0s
                     using the key b{l} where {1} is the hidden layer
+            __activation: the activation function to be used in hidden layers
         """
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -69,6 +73,9 @@ class DeepNeuralNetwork:
             raise ValueError("nx must be a positive integer")
         if type(layers) is not list or len(layers) < 1:
             raise TypeError("layers must be a list of positive integers")
+        if activation not in ['sig', 'tanh']:
+            raise ValueError("activation must be 'sig' or 'tanh'")
+        self.__activation = activation
         weights = {}
         previous = nx
         for index, layer in enumerate(layers, 1):
@@ -106,6 +113,14 @@ class DeepNeuralNetwork:
         """
         return (self.__weights)
 
+    @property
+    def activation(self):
+        """
+        gets the private instance attribute __activation
+        __activation is the activation function to be used in hidden layers
+        """
+        return self.__activation
+
     def forward_prop(self, X):
         """
         calculates the forward propagation of the neuron
@@ -131,7 +146,14 @@ class DeepNeuralNetwork:
             W = self.weights["W{}".format(index + 1)]
             b = self.weights["b{}".format(index + 1)]
             z = np.matmul(W, self.cache["A{}".format(index)]) + b
-            A = 1 / (1 + (np.exp(-z)))
+            if index == self.__L - 1:
+                # Output layer: always sigmoid
+                A = 1 / (1 + np.exp(-z))
+            else:
+                if self.__activation == 'sig':
+                    A = 1 / (1 + np.exp(-z))
+                else:  # tanh activation for hidden layers
+                    A = np.tanh(z)
             self.__cache["A{}".format(index + 1)] = A
         return (A, self.cache)
 
@@ -227,24 +249,28 @@ class DeepNeuralNetwork:
         """
         m = Y.shape[1]
         back = {}
-        for index in range(self.L, 0, -1):
-            A = cache["A{}".format(index - 1)]
-            if index == self.L:
-                back["dz{}".format(index)] = (cache["A{}".format(index)] - Y)
+        # make a copy of current weights for backprop of hidden layers
+        weights_copy = self.__weights.copy()
+        for l in range(self.__L, 0, -1):
+            A_prev = cache["A{}".format(l - 1)]
+            A_curr = cache["A{}".format(l)]
+            if l == self.__L:
+                dZ = A_curr - Y
             else:
-                dz_prev = back["dz{}".format(index + 1)]
-                A_current = cache["A{}".format(index)]
-                back["dz{}".format(index)] = (
-                    np.matmul(W_prev.transpose(), dz_prev) *
-                    (A_current * (1 - A_current)))
-            dz = back["dz{}".format(index)]
-            dW = (1 / m) * (np.matmul(dz, A.transpose()))
-            db = (1 / m) * np.sum(dz, axis=1, keepdims=True)
-            W_prev = self.weights["W{}".format(index)]
-            self.__weights["W{}".format(index)] = (
-                self.weights["W{}".format(index)] - (alpha * dW))
-            self.__weights["b{}".format(index)] = (
-                self.weights["b{}".format(index)] - (alpha * db))
+                dZ_next = back["dz{}".format(l + 1)]
+                W_next = weights_copy["W{}".format(l + 1)]
+                if self.__activation == 'sig':
+                    derivative = A_curr * (1 - A_curr)
+                else:  # tanh derivative
+                    derivative = 1 - np.power(A_curr, 2)
+                dZ = np.matmul(W_next.T, dZ_next) * derivative
+            dW = (1 / m) * np.matmul(dZ, A_prev.T)
+            db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
+            back["dz{}".format(l)] = dZ
+            self.__weights["W{}".format(l)] = (
+                self.weights["W{}".format(l)] - alpha * dW)
+            self.__weights["b{}".format(l)] = (
+                self.weights["b{}".format(l)] - alpha * db)
 
     def train(self, X, Y, iterations=5000, alpha=0.05,
               verbose=True, graph=True, step=100):
